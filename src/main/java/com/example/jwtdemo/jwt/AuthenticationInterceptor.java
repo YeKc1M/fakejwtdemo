@@ -34,6 +34,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             if(userLoginToken.required()){
                 if(token == null){
                     response.setStatus(401);
+                    response.getWriter().flush();
+                    return true;
 //                    throw new RuntimeException("401");
                 }
                 String username;
@@ -41,6 +43,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     username = JWT.decode(token).getAudience().get(0);
                 }catch (JWTDecodeException jwtDecodeException){
                     response.setStatus(401);
+                    response.getWriter().flush();
+                    return true;
 //                    throw new RuntimeException("401");
                 }
                 JWTVerifier jwtVerifier = JWT.require(JwtUtils.algorithm)
@@ -50,6 +54,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     jwtVerifier.verify(token);
                 }catch (JWTVerificationException jwtVerificationException){
                     response.setStatus(401);
+                    response.getWriter().flush();
+                    return true;
 //                    throw new RuntimeException("401");
                 }
                 return true;
